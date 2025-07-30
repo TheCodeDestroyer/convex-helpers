@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import { faker } from "@faker-js/faker";
+import { useQuery } from "convex/react";
+import { api } from "../convex/_generated/api";
+import { Id } from "../convex/_generated/dataModel";
 
-// For demo purposes. In a real app, you'd have real user data.
-const NAME = getOrSetFakeName();
+const userId = "1" as Id<"users">;
 
 export default function App() {
-  const messages = [
-    { _id: "1", user: "Alice", body: "Good morning!" },
-    { _id: "2", user: NAME, body: "Beautiful sunrise today" },
-  ];
-  // TODO: Add mutation hook here.
+  const messages = useQuery(api.chat.getMessages, {
+    userId
+  });
 
   const [newMessageText, setNewMessageText] = useState("");
 
@@ -25,15 +25,15 @@ export default function App() {
       <header>
         <h1>Convex Chat</h1>
         <p>
-          Connected as <strong>{NAME}</strong>
+          Connected as <strong>{userId}</strong>
         </p>
       </header>
       {messages?.map((message) => (
         <article
           key={message._id}
-          className={message.user === NAME ? "message-mine" : ""}
+          className={message.userId === userId ? "message-mine" : ""}
         >
-          <div>{message.user}</div>
+          <div>{message.userId}</div>
 
           <p>{message.body}</p>
         </article>
